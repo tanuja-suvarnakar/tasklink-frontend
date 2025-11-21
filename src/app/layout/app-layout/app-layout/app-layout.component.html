@@ -1,0 +1,123 @@
+<div class="min-h-screen grid grid-cols-[260px_1fr] bg-slate-50">
+
+  <!-- Sidebar -->
+  <aside class="relative bg-white border-r border-slate-200 p-4 flex flex-col">
+    <!-- Accent bar -->
+    <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-sky-400 via-violet-500 to-emerald-500 rounded-r"></div>
+
+    <!-- Brand -->
+    <div class="flex items-center gap-3 mb-6 pl-2">
+      <div class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-slate-900 text-white shadow-sm">TL</div>
+      <div class="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
+        TaskLink
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="space-y-1">
+      <div class="text-[11px] uppercase tracking-wider text-slate-400 px-2 mb-1">Navigation</div>
+
+      <!-- Dashboard -->
+      <a routerLink="/dashboard" routerLinkActive="bg-slate-100"
+         class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition">
+        <span class="w-7 h-7 grid place-items-center rounded-md bg-slate-100 text-slate-600">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 10l9-7 9 7"></path>
+            <path d="M5 10v10a2 2 0 0 0 2 2h4v-6h2v6h4a2 2 0 0 0 2-2V10"></path>
+          </svg>
+        </span>
+        <span class="font-medium text-slate-800">Dashboard</span>
+      </a>
+
+      <!-- Board -->
+      <a routerLink="/board" routerLinkActive="bg-slate-100"
+         class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition">
+        <span class="w-7 h-7 grid place-items-center rounded-md bg-slate-100 text-slate-600">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="4" width="6" height="16" rx="1.5"></rect>
+            <rect x="10" y="4" width="4" height="16" rx="1.5"></rect>
+            <rect x="15" y="4" width="6" height="16" rx="1.5"></rect>
+          </svg>
+        </span>
+        <span class="font-medium text-slate-800">Board</span>
+      </a>
+
+      <!-- Backlog -->
+      <a routerLink="/backlog" routerLinkActive="bg-slate-100"
+         class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition">
+        <span class="w-7 h-7 grid place-items-center rounded-md bg-amber-50 text-amber-600">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <rect x="5" y="3" width="14" height="18" rx="2"></rect>
+            <path d="M8 8h8M8 12h8M8 16h8"></path>
+          </svg>
+        </span>
+        <span class="font-medium text-slate-800">Backlog</span>
+      </a>
+
+      <!-- Summary -->
+     <a routerLink="/projects/summary"
+   routerLinkActive="bg-slate-100"
+   class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition">
+  <span class="w-7 h-7 grid place-items-center rounded-md bg-emerald-50 text-emerald-600">
+    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="M8.5 12.5l2.5 2.5 4.5-5"></path>
+    </svg>
+  </span>
+  <span class="font-medium text-slate-800">Summary</span>
+</a>
+
+
+      <!-- Projects -->
+      <a routerLink="/projects" routerLinkActive="bg-slate-100"
+         class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition">
+        <span class="w-7 h-7 grid place-items-center rounded-md bg-sky-50 text-sky-600">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+          </svg>
+        </span>
+        <span class="font-medium text-slate-800">Projects</span>
+      </a>
+
+      <!-- Profile -->
+      <a routerLink="/profile" routerLinkActive="bg-slate-100"
+         class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition">
+        <span class="w-7 h-7 grid place-items-center rounded-md bg-violet-50 text-violet-600">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="3"></circle>
+            <path d="M4 20a8 8 0 0 1 16 0"></path>
+          </svg>
+        </span>
+        <span class="font-medium text-slate-800">Profile</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar footer -->
+    <div class="mt-auto pt-6 text-xs text-slate-400 px-2">
+      <div class="border-t border-slate-200 pt-4">
+        <div>© TaskLink</div>
+        <div class="mt-1">v1.0.0</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="p-4 md:p-6">
+    <!-- Top bar -->
+    <div class="sticky top-0 z-10 -mt-2 mb-6">
+      <div class="rounded-xl border border-slate-200 bg-white/90 backdrop-blur px-4 py-3 flex items-center justify-between shadow-sm">
+        <h1 class="text-xl md:text-2xl font-semibold text-slate-800 tracking-tight">TaskLink</h1>
+        <button (click)="auth.logout()"
+                class="px-3 py-2 text-sm rounded-lg text-white bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-700">
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative">
+      <router-outlet></router-outlet>
+      <router-outlet name="modal"></router-outlet>
+    </div>
+  </main>
+</div>

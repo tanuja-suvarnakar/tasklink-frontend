@@ -1,0 +1,87 @@
+<div class="relative min-h-[70vh] grid place-items-center">
+
+  <!-- Ambient background glow -->
+  <div class="absolute inset-0 -z-10 opacity-60 pointer-events-none"
+       style="background:
+         radial-gradient(600px circle at 10% 20%, rgba(56,189,248,.12), transparent 40%),
+         radial-gradient(800px circle at 90% 30%, rgba(139,92,246,.12), transparent 40%),
+         radial-gradient(700px circle at 50% 80%, rgba(16,185,129,.12), transparent 40%);">
+  </div>
+
+  <!-- Card -->
+  <div class="w-full max-w-lg bg-white/90 backdrop-blur border border-slate-200 rounded-3xl shadow-2xl overflow-hidden">
+
+    <!-- Top banner -->
+    <div class="relative h-24 bg-gradient-to-r from-sky-400 via-violet-500 to-emerald-500"></div>
+
+    <!-- Content -->
+    <div class="px-6 pb-6">
+
+      <!-- Header -->
+      <div class="-mt-10 flex items-center gap-4">
+        <div class="relative">
+          <div class="w-20 h-20 rounded-full ring-4 ring-white grid place-items-center text-slate-800 font-semibold bg-white shadow-md border border-slate-200">
+            <!-- Initial (from name/email) -->
+            <ng-container *ngIf="(user$ | async) as userInit">
+              {{ (userInit.firstname || userInit.lastname ? (userInit.firstname || userInit.lastname) : userInit.email) | slice:0:1 }}
+            </ng-container>
+          </div>
+          <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white bg-emerald-500"></div>
+        </div>
+        
+        <!-- ============== FIXED SECTION ============== -->
+        <div class="min-w-0">
+          <div class="text-xl font-semibold text-black leading-tight drop-shadow">Profile</div>
+          <div class="text-xs text-black-200 drop-shadow-sm">Your account details</div>
+        </div>
+        <!-- ========================================= -->
+
+      </div>
+
+      <!-- Body -->
+      <div class="mt-6" *ngIf="(user$ | async) as user; else empty">
+        <!-- Full Name -->
+        <div class="flex items-start gap-3 mb-4">
+          <span class="mt-0.5 inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-700">
+            <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="3"></circle>
+              <path d="M4 20a8 8 0 0 1 16 0"></path>
+            </svg>
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="text-xs font-medium text-slate-500">Full Name</div>
+            <div class="font-medium text-slate-800 mt-0.5">
+              <ng-container *ngIf="user.firstname || user.lastname; else noName">
+                {{ user.firstname }} {{ user.lastname }}
+              </ng-container>
+              <ng-template #noName>
+                <span class="px-2 py-0.5 rounded-full border text-xs bg-slate-50 text-slate-600">Not set</span>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="flex items-start gap-3">
+          <span class="mt-0.5 inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-700">
+            <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="M3 7l9 6 9-6"></path>
+            </svg>
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="text-xs font-medium text-slate-500">Email</div>
+            <div class="font-medium text-slate-800 mt-0.5 break-words">{{ user.email }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty -->
+      <ng-template #empty>
+        <div class="mt-6 rounded-xl border border-dashed border-slate-300 p-6 text-center text-slate-500 bg-slate-50/60">
+          No user data
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

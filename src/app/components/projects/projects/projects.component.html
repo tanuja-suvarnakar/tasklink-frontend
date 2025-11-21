@@ -1,0 +1,172 @@
+<div class="grid lg:grid-cols-2 gap-6">
+
+  <!-- Create Project -->
+  <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white">
+    <!-- Accent bar -->
+    <div class="h-1 w-full bg-gradient-to-r from-sky-400 via-violet-500 to-emerald-500"></div>
+
+    <div class="p-5">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-xl text-slate-700" aria-hidden="true">rocket_launch</span>
+          <div class="font-semibold text-lg">Create Project</div>
+        </div>
+        <span class="text-xs px-2 py-1 rounded-full border bg-slate-50 text-slate-600">New</span>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="create()" class="space-y-4">
+        <div>
+          <label class="text-sm font-medium text-slate-700">Name</label>
+          <div class="mt-1 relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true">label</span>
+            <input
+              class="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-300"
+              formControlName="name"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-slate-700">Description</label>
+          <div class="mt-1 relative">
+            <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400" aria-hidden="true">description</span>
+            <textarea
+              rows="3"
+              class="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-300"
+              formControlName="description"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button
+            class="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-700 disabled:opacity-60"
+            [disabled]="loading"
+          >
+            <span class="inline-flex items-center gap-2">
+              <span *ngIf="loading" class="inline-block w-3.5 h-3.5 border-2 border-white/60 border-t-transparent rounded-full animate-spin"></span>
+              {{ loading ? 'Creating...' : 'Create' }}
+            </span>
+          </button>
+          <span class="text-xs text-slate-500">Tip: Keep names short and meaningful</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Projects list -->
+  <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white">
+    <!-- Accent bar -->
+    <div class="h-1 w-full bg-gradient-to-r from-emerald-400 via-sky-400 to-violet-500"></div>
+
+    <div class="p-5">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-xl text-slate-700" aria-hidden="true">folder_open</span>
+          <div class="font-semibold text-lg">Projects</div>
+        </div>
+
+        <!-- Count or skeleton -->
+        <div class="text-xs text-slate-500">
+          <ng-container *ngIf="!projectsLoading; else totalSkeleton">
+            {{ (projects?.length || 0) }} total
+          </ng-container>
+          <ng-template #totalSkeleton>
+            <span class="inline-block h-4 w-16 rounded bg-slate-200 animate-pulse"></span>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Skeleton list while loading -->
+      <div *ngIf="projectsLoading" class="space-y-3">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white" *ngFor="let i of [1,2,3,4,5]">
+          <div class="grid grid-cols-[1fr_auto] gap-3 items-start animate-pulse">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="inline-flex w-6 h-6 rounded-md bg-slate-200"></span>
+                <div class="h-4 w-40 bg-slate-200 rounded"></div>
+              </div>
+              <div class="h-3 w-3/4 bg-slate-100 rounded mt-2"></div>
+            </div>
+            <div class="h-8 w-24 rounded-lg bg-slate-100"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state (after loading) -->
+      <div *ngIf="!projectsLoading && !(projects?.length)" class="border border-dashed rounded-xl p-6 text-center text-slate-500 bg-slate-50/60">
+        No projects yet. Create your first project on the left.
+      </div>
+
+      <!-- List (after loading) -->
+      <ng-container *ngIf="!projectsLoading && (projects?.length)">
+        <ul class="space-y-3">
+          <li class="group p-4 rounded-xl border border-slate-200 bg-white hover:shadow-sm transition"
+              *ngFor="let p of projectsPaged; trackBy: trackProjectById">
+            <div class="grid grid-cols-[1fr_auto] gap-3 items-start">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-slate-100 border border-slate-200">
+                    <span class="material-symbols-outlined text-[18px] text-slate-700" aria-hidden="true">folder</span>
+                  </span>
+                  <div class="font-semibold text-slate-800 leading-tight">{{ p.name }}</div>
+                </div>
+                <div class="text-sm text-slate-600 mt-1 line-clamp-2">
+                  {{ p.description || 'No description provided.' }}
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <a
+                  [routerLink]="['/projects', p.id, 'board']"
+                  class="px-3 py-1.5 text-sm rounded-lg border border-slate-300 hover:bg-slate-50"
+                >
+                  Open board
+                </a>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Pagination footer -->
+        <div class="flex items-center justify-between mt-3">
+          <div class="text-sm text-slate-600">
+            Showing {{ projectsPageStart + 1 }}–{{ projectsPageEnd }} of {{ projects.length }}
+          </div>
+
+          <div class="flex items-center gap-1">
+            <button
+              class="px-3 py-1.5 rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              (click)="prevProjectsPage()"
+              [disabled]="projectsPage === 1"
+              aria-label="Previous page"
+            >
+              Prev
+            </button>
+
+            <ng-container *ngFor="let p of projectsPages">
+              <button
+                class="px-3 py-1.5 rounded-md border"
+                [ngClass]="p === projectsPage
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                (click)="setProjectsPage(p)"
+                [attr.aria-current]="p === projectsPage ? 'page' : null"
+              >
+                {{ p }}
+              </button>
+            </ng-container>
+
+            <button
+              class="px-3 py-1.5 rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              (click)="nextProjectsPage()"
+              [disabled]="projectsPage === projectsTotalPages"
+              aria-label="Next page"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

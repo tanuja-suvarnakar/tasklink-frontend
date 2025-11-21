@@ -1,0 +1,219 @@
+<div class="space-y-6">
+
+  <!-- Header / Filter -->
+  <div class="flex items-center justify-between">
+    <div class="text-xl font-semibold">Summary</div>
+
+    <div class="flex items-center gap-2">
+     
+      <button class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50" (click)="openBoard()">
+        View all work items
+      </button>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="p-4 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-sm">
+    {{ error }}
+  </div>
+
+  <!-- Stat cards -->
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Loading skeletons -->
+    <ng-container *ngIf="loading">
+      <div *ngFor="let i of [1,2,3,4]" class="rounded-xl border border-slate-200 bg-white p-4">
+        <div class="flex items-center gap-3 animate-pulse">
+          <div class="w-9 h-9 rounded-lg bg-slate-200"></div>
+          <div class="flex-1">
+            <div class="h-4 w-1/3 bg-slate-200 rounded mb-1"></div>
+            <div class="h-6 w-1/4 bg-slate-100 rounded"></div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Loaded cards -->
+    <ng-container *ngIf="!loading && summary">
+      <!-- Completed (total overall) -->
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
+            <!-- check-circle icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </span>
+          <div>
+            <div class="text-slate-500 text-sm">completed</div>
+            <div class="text-xl font-semibold">{{ summary.completedTasks }}</div>
+            <div class="text-[11px] text-slate-400 -mt-0.5">overall</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Updated (last 7 days) -->
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-sky-50 text-sky-600 border border-sky-100">
+            <!-- pencil icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.313 3 20.25l.937-4.5L16.862 3.487z" />
+            </svg>
+          </span>
+          <div>
+            <div class="text-slate-500 text-sm">updated</div>
+            <div class="text-xl font-semibold">{{ summary.updatedLast7Days }}</div>
+            <div class="text-[11px] text-slate-400 -mt-0.5">in the last 7 days</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Created (last 7 days) -->
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
+            <!-- plus icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/>
+            </svg>
+          </span>
+          <div>
+            <div class="text-slate-500 text-sm">created</div>
+            <div class="text-xl font-semibold">{{ summary.createdLast7Days }}</div>
+            <div class="text-[11px] text-slate-400 -mt-0.5">in the last 7 days</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Due soon (next 7 days) -->
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-amber-50 text-amber-600 border border-amber-100">
+            <!-- clock icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/>
+            </svg>
+          </span>
+          <div>
+            <div class="text-slate-500 text-sm">due soon</div>
+            <div class="text-xl font-semibold">{{ summary.dueSoonCount }}</div>
+            <div class="text-[11px] text-slate-400 -mt-0.5">in the next 7 days</div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Main grid: Status overview + Recent activity -->
+  <div class="grid lg:grid-cols-3 gap-6">
+    <!-- Status overview -->
+    <div class="lg:col-span-2 relative overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div class="px-5 py-4 border-b border-slate-100">
+        <div class="flex items-center justify-between">
+          <div class="font-semibold">Status overview</div>
+          <button class="text-sm text-sky-600 hover:underline" (click)="openBoard()">View all work items</button>
+        </div>
+        <div class="text-xs text-slate-500 mt-0.5">Get a snapshot of the status of your work items.</div>
+      </div>
+
+      <div *ngIf="loading" class="p-6">
+        <div class="flex items-center gap-8">
+          <div class="h-40 w-40 rounded-full bg-slate-100 animate-pulse"></div>
+          <div class="flex-1 space-y-3">
+            <div class="h-4 w-40 bg-slate-200 rounded"></div>
+            <div class="h-4 w-32 bg-slate-100 rounded"></div>
+            <div class="h-4 w-28 bg-slate-100 rounded"></div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && summary" class="p-6">
+        <div class="flex items-center gap-8">
+          <div class="relative">
+            <svg [attr.width]="160" [attr.height]="160" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" [attr.r]="R" stroke="#e5e7eb" [attr.stroke-width]="W" fill="none"></circle>
+              <ng-container *ngFor="let s of segments">
+                <circle
+                  cx="60" cy="60" [attr.r]="R" [attr.stroke]="s.color" [attr.stroke-width]="W" fill="none"
+                  [attr.stroke-dasharray]="s.dash + ' ' + C"
+                  [attr.stroke-dashoffset]="s.offset"
+                  transform="rotate(-90 60 60)"
+                  stroke-linecap="round">
+                </circle>
+              </ng-container>
+            </svg>
+
+            <div class="absolute inset-0 grid place-items-center">
+              <div class="text-center">
+                <div class="text-2xl font-semibold">{{ summary.totalTasks }}</div>
+                <div class="text-[11px] text-slate-500">Total work items</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-1 space-y-2">
+            <div class="flex items-center gap-2 text-sm">
+              <span class="inline-block w-3 h-3 rounded-sm" style="background:#0ea5e9"></span>
+              <span class="text-slate-700">In Progress</span>
+              <span class="ml-auto text-slate-500">{{ countOf('IN_PROGRESS') }}</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <span class="inline-block w-3 h-3 rounded-sm" style="background:#10b981"></span>
+              <span class="text-slate-700">To Do</span>
+              <span class="ml-auto text-slate-500">{{ countOf('OPEN') }}</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <span class="inline-block w-3 h-3 rounded-sm" style="background:#22c55e"></span>
+              <span class="text-slate-700">Done</span>
+              <span class="ml-auto text-slate-500">{{ countOf('DONE') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent activity -->
+    <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div class="px-5 py-4 border-b border-slate-100">
+        <div class="font-semibold">Recent activity</div>
+        <div class="text-xs text-slate-500 mt-0.5">Stay up to date with what's happening across the space.</div>
+      </div>
+
+      <div *ngIf="loading" class="p-5 space-y-4">
+        <div *ngFor="let i of [1,2,3]" class="flex items-start gap-3 animate-pulse">
+          <div class="w-8 h-8 rounded-full bg-slate-200"></div>
+          <div class="flex-1">
+            <div class="h-4 w-2/3 bg-slate-200 rounded mb-2"></div>
+            <div class="h-3 w-24 bg-slate-100 rounded"></div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && summary" class="p-5">
+        <div *ngIf="!(summary.recentActivity?.length)" class="text-sm text-slate-500">
+          No recent activity.
+        </div>
+
+        <div *ngFor="let a of summary.recentActivity" class="flex items-start gap-3 py-3 border-b last:border-b-0 border-slate-100">
+          <div class="w-8 h-8 rounded-full border border-slate-200 bg-slate-50 grid place-items-center text-[11px] font-semibold text-slate-700">
+            {{ initials(a?.actorName) }}
+          </div>
+
+          <div class="min-w-0 flex-1">
+            <div class="text-sm text-slate-700">
+              <span class="font-medium">{{ a?.actorName || 'Someone' }}</span>
+              <span class="text-slate-500"> {{ a?.action || 'updated' }} </span>
+              <span class="text-slate-700">{{ a?.taskTitle || 'Task' }}</span>
+              <span *ngIf="a?.status" class="ml-2 px-1.5 py-0.5 text-[10px] rounded border bg-slate-50 text-slate-700">
+                {{ a?.status }}
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-500 mt-0.5">
+              {{ timeAgo(a?.timestamp) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

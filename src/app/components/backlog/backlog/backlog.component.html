@@ -1,0 +1,172 @@
+<div class="space-y-5">
+  <!-- Header -->
+  <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white">
+    <div class="h-1 w-full bg-gradient-to-r from-sky-400 via-violet-500 to-emerald-500"></div>
+    <div class="px-4 md:px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🗂️</span>
+        <div class="text-xl font-semibold">Backlog</div>
+
+        <!-- Count: real or skeleton -->
+        <ng-container *ngIf="!loading; else countSkeleton">
+          <span class="ml-2 text-xs px-2 py-0.5 rounded-full border bg-slate-50 text-slate-600">
+            {{ tasks?.length || 0 }} items
+          </span>
+        </ng-container>
+        <ng-template #countSkeleton>
+          <span class="ml-2 inline-block h-5 w-20 rounded-full bg-slate-200 animate-pulse"></span>
+        </ng-template>
+      </div>
+
+      <div class="text-sm text-slate-500 flex items-center gap-2" *ngIf="loading">
+        <span class="inline-block w-3 h-3 border-2 border-slate-400/60 border-t-transparent rounded-full animate-spin"></span>
+        Loading...
+      </div>
+    </div>
+  </div>
+
+  <!-- Create -->
+  <form class="flex gap-2 items-center rounded-xl border border-slate-200 bg-white p-2 shadow-sm" (ngSubmit)="create()">
+    <span class="pl-2 text-slate-400">＋</span>
+    <input
+      class="flex-1 border-0 focus:ring-0 bg-transparent text-sm placeholder:text-slate-400"
+      placeholder="Create backlog item..."
+      [(ngModel)]="newTitle"
+      name="backlogTitle"
+    />
+    <button class="px-3 py-2 rounded-lg text-white bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-700" type="submit">
+      Add
+    </button>
+  </form>
+
+  <!-- Error -->
+  <div class="text-red-600 text-sm" *ngIf="error">{{ error }}</div>
+
+  <!-- List -->
+<!-- List -->
+<div
+  cdkDropList
+  (cdkDropListDropped)="drop($event)"
+  class="rounded-2xl border border-slate-200 bg-white overflow-hidden"
+>
+  <!-- Top accent -->
+  <div class="h-1 w-full bg-gradient-to-r from-emerald-400 via-sky-400 to-violet-500"></div>
+
+  <!-- Loading skeletons -->
+  <ng-container *ngIf="loading; else listLoaded">
+    <div class="p-4 border-b border-slate-100 last:border-b-0" *ngFor="let i of [1,2,3,4,5]">
+      <div class="flex items-start justify-between gap-3 animate-pulse">
+        <div class="min-w-0 flex-1">
+          <div class="h-4 bg-slate-200 rounded w-2/3"></div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <span class="h-5 w-24 rounded-full bg-slate-100"></span>
+            <span class="h-5 w-16 rounded-full bg-slate-100"></span>
+            <span class="h-5 w-20 rounded-full bg-slate-100"></span>
+          </div>
+          <div class="mt-2 h-3 bg-slate-100 rounded w-3/4"></div>
+        </div>
+        <div class="h-8 w-16 rounded-lg bg-slate-100"></div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Loaded state -->
+  <ng-template #listLoaded>
+    <!-- Empty state (only when not loading) -->
+    <div *ngIf="!(tasks?.length)" class="p-8 text-center text-slate-500">
+      No backlog items yet. Add one above.
+    </div>
+
+    <!-- Items (paged) -->
+    <div
+      class="p-4 border-b border-slate-100 last:border-b-0 cursor-grab active:cursor-grabbing bg-white hover:bg-slate-50 transition"
+      *ngFor="let t of pagedTasks; trackBy: trackById"
+      cdkDrag
+    >
+      <div class="flex items-start justify-between gap-3">
+        <!-- Left content -->
+        <div class="min-w-0">
+          <div class="font-semibold text-slate-800 truncate">{{ t.title }}</div>
+
+          <div class="mt-1 flex flex-wrap items-center gap-2 text-xs">
+            <span class="px-2 py-0.5 rounded-full border bg-slate-50 text-slate-600">
+              {{ t.key || ('TASK-' + t.id) }}
+            </span>
+
+            <span
+              class="px-2 py-0.5 rounded-full border bg-white"
+              [ngClass]="{
+                'border-sky-200 text-sky-700 bg-sky-50': (t.issueType || 'TASK') === 'TASK',
+                'border-amber-200 text-amber-700 bg-amber-50': t.issueType === 'STORY',
+                'border-rose-200 text-rose-700 bg-rose-50': t.issueType === 'BUG'
+              }"
+            >
+              {{ t.issueType || 'TASK' }}
+            </span>
+
+            <span
+              class="px-2 py-0.5 rounded-full border bg-white"
+              [ngClass]="{
+                'bg-emerald-50 text-emerald-700 border-emerald-200': (t.priority || 'MEDIUM') === 'LOW',
+                'bg-amber-50 text-amber-700 border-amber-200': (t.priority || 'MEDIUM') === 'MEDIUM',
+                'bg-orange-50 text-orange-700 border-orange-200': t.priority === 'HIGH',
+                'bg-red-50 text-red-700 border-red-200': t.priority === 'CRITICAL'
+              }"
+            >
+              {{ t.priority || 'MEDIUM' }}
+            </span>
+          </div>
+
+          <div class="mt-1 text-xs text-slate-500 line-clamp-1">
+            {{ t.description }}
+          </div>
+        </div>
+
+        <a
+          class="shrink-0 px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white hover:bg-slate-50"
+          [routerLink]="['/tasks', t.id]"
+        >
+          Open
+        </a>
+      </div>
+    </div>
+
+    <!-- Pagination footer -->
+    <div class="flex items-center justify-between px-4 py-3 bg-white" *ngIf="tasks?.length">
+      <div class="text-sm text-slate-600">
+        Showing {{ pageStart + 1 }}–{{ pageEnd }} of {{ tasks.length }}
+      </div>
+
+      <div class="flex items-center gap-1">
+        <button
+          class="px-3 py-1.5 rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          (click)="prevPage()"
+          [disabled]="currentPage === 1"
+        >
+          Prev
+        </button>
+
+        <ng-container *ngFor="let p of pages">
+          <button
+            class="px-3 py-1.5 rounded-md border"
+            [ngClass]="p === currentPage
+              ? 'bg-slate-900 text-white border-slate-900'
+              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+            (click)="setPage(p)"
+          >
+            {{ p }}
+          </button>
+        </ng-container>
+
+        <button
+          class="px-3 py-1.5 rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>
+</div>
